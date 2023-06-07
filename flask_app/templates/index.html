@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stonk Viewer</title>
+</head>
+<body>
+    <h1>Stonk Viewer</h1>
+    {% for stock in stocks %}
+        <p>Date: {{ stock.Date }}, Open: {{ stock.Open }}, High: {{ stock.High }}, Low: {{ stock.Low }}, Close: {{ stock.Close }}, AdjClose: {{ stock.AdjClose }}, Volume: {{ stock.Volume }}, Ticker: {{ stock.Ticker }}</p>
+    {% endfor %}
+</body>
+</html>
