@@ -1,8 +1,19 @@
 from flask import Flask, render_template
 import yfinance as yf
 import plotly.graph_objects as go
+import psycopg2
+import pandas as pd
 
 app = Flask(__name__)
+
+# Connect to your PostgreSQL DB
+conn = psycopg2.connect(
+    dbname="emil",
+    user="",
+    password="",
+    host="127.0.0.1"
+)
+cur = conn.cursor()
 
 @app.route('/')
 def home():
@@ -13,9 +24,26 @@ def stock_graph():
     # Fetch data from yfinance for AAPL
     data_aapl = yf.download(tickers='AAPL', period='1d', interval='1m')
 
+    # Insert or update AAPL data into database
+    data_aapl.reset_index(inplace=True)
+    data_aapl_columns = ['Datetime', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']
+    data_aapl_values = data_aapl[data_aapl_columns].values.tolist()
+    insert_query_aapl = """
+        INSERT INTO aapl_data (Datetime, Open, High, Low, Close, "Adj Close", Volume)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+    cur.executemany(insert_query_aapl, data_aapl_values)
+    conn.commit()
+
+    # Fetch AAPL data from database
+    aapl_query = "SELECT * FROM aapl_data;"
+    cur.execute(aapl_query)
+    aapl_rows = cur.fetchall()
+    data_aapl = pd.DataFrame(aapl_rows, columns=data_aapl_columns)
+
     # Create the candlestick chart for AAPL
     fig_aapl = go.Figure(data=[go.Candlestick(
-        x=data_aapl.index,
+        x=data_aapl['Datetime'],
         open=data_aapl['Open'],
         high=data_aapl['High'],
         low=data_aapl['Low'],
@@ -46,9 +74,26 @@ def stock_graph():
     # Fetch data from yfinance for NOVO-B.CO
     data_novo = yf.download(tickers='NOVO-B.CO', period='1d', interval='1m')
 
+    # Insert or update NOVO data into database
+    data_novo.reset_index(inplace=True)
+    data_novo_columns = ['Datetime', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']
+    data_novo_values = data_novo[data_novo_columns].values.tolist()
+    insert_query_novo = """
+        INSERT INTO novo_data (Datetime, Open, High, Low, Close, "Adj Close", Volume)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+    cur.executemany(insert_query_novo, data_novo_values)
+    conn.commit()
+
+    # Fetch NOVO data from database
+    novo_query = "SELECT * FROM novo_data;"
+    cur.execute(novo_query)
+    novo_rows = cur.fetchall()
+    data_novo = pd.DataFrame(novo_rows, columns=data_novo_columns)
+
     # Create the candlestick chart for NOVO-B.CO
     fig_novo = go.Figure(data=[go.Candlestick(
-        x=data_novo.index,
+        x=data_novo['Datetime'],
         open=data_novo['Open'],
         high=data_novo['High'],
         low=data_novo['Low'],
