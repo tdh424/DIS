@@ -1,15 +1,21 @@
-<!-- stock_graph.html -->
 {% extends "layout.html" %}
 
 {% block content %}
-    <div id="stock-chart"></div>
+    <div id="stock-chart-aapl"></div>
+    <div id="stock-chart-novo"></div>
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script>
-        // Parse the JSON data for the graph
-        var graphData = {{ graph_json | safe }};
+        // Parse the JSON data for AAPL graph
+        var graphDataAAPL = {{ graph_json_aapl | safe }};
 
-        // Render the graph using the parsed JSON data
-        Plotly.newPlot('stock-chart', graphData);
+        // Render the AAPL graph using the parsed JSON data
+        Plotly.newPlot('stock-chart-aapl', graphDataAAPL);
+
+        // Parse the JSON data for NOVO-B.CO graph
+        var graphDataNOVO = {{ graph_json_novo | safe }};
+
+        // Render the NOVO-B.CO graph using the parsed JSON data
+        Plotly.newPlot('stock-chart-novo', graphDataNOVO);
     </script>
 {% endblock %}
