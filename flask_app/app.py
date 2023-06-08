@@ -76,7 +76,6 @@ def stock_graph():
         )
     )
 
-    # Convert the figures to JSON for passing to the template
     graph_json_aapl = fig_aapl.to_json()
     graph_json_novo = fig_novo.to_json()
 
