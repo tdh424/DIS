@@ -1,18 +1,50 @@
-<!-- layout.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>My Web App</title>
-    <!-- Include CSS and JS files -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        ul.horizontal-menu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+
+        ul.horizontal-menu li {
+            float: left;
+        }
+
+        ul.horizontal-menu li a {
+            display: block;
+            color: #333;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        ul.horizontal-menu li a:hover {
+            background-color: #ddd;
+        }
+
+        ul.horizontal-menu li:first-child {
+            float: left;
+        }
+
+        ul.horizontal-menu li:last-child {
+            float: right;
+        }
+    </style>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
     <!-- Navigation menu -->
     <nav>
-        <ul>
-            <li><a href="{{ url_for('home') }}">Home</a></li>
+        <ul class="horizontal-menu">
+            {% if logged_in %}
+                <li><a href="{{ url_for('home') }}">Logout</a></li>
+            {% endif %}
             <li><a href="{{ url_for('stock_graph') }}">Stock Graph</a></li>
         </ul>
     </nav>
@@ -21,11 +53,6 @@
     <div class="content">
         {% block content %}{% endblock %}
     </div>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2023 My Web App</p>
-    </footer>
 
     <!-- Additional scripts -->
     {% block scripts %}{% endblock %}

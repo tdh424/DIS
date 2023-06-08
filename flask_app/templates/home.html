@@ -1,6 +1,13 @@
 <!-- home.html -->
-{% extends "layout.html" %}
 {% block content %}
-    <h1>Welcome to the Home Page</h1>
-    <p>This is the content of the home page.</p>
+    <h1 style="text-align: center; font-weight: bold;">STONKVIEWER</h1>
+    <form method="POST" action="{{ url_for('home') }}" style="text-align: center;">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <input type="submit" value="Login">
+    </form>
 {% endblock %}

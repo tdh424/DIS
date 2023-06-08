@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import yfinance as yf
 import plotly.graph_objects as go
 import psycopg2
@@ -15,8 +15,17 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+        # Get the entered username and password from the login form
+        username = request.form['username']
+        password = request.form['password']
+
+        # Check if the username and password are correct
+        if username == 'DIS' and password == '123':
+            return redirect(url_for('stock_graph'))
+
     return render_template('home.html')
 
 @app.route('/stock_graph')
