@@ -7,19 +7,25 @@ db = SQLAlchemy(app)
 
 class Stock(db.Model):
     __tablename__ = 'stocks'
-    Date = db.Column(db.DateTime, primary_key=True)
+    Datetime = db.Column(db.DateTime, primary_key=True)
     Open = db.Column(db.Float)
     High = db.Column(db.Float)
     Low = db.Column(db.Float)
     Close = db.Column(db.Float)
-    AdjClose = db.Column(db.Float)
+    Adj_Close = db.Column(db.Float) 
     Volume = db.Column(db.Integer)
-    Ticker = db.Column(db.String(10))
+    ticker = db.Column(db.String(10)) 
 
 @app.route('/')
 def home():
+    # Retrieve the stock data from the database
     stocks = Stock.query.all()
-    return render_template('index.html', stocks=stocks)
+
+    # Print the column names
+    for stock in stocks:
+        print(stock.__dict__.keys())  # Print the column names
+
+    return render_template('home.html', stocks=stocks)
 
 if __name__ == '__main__':
     app.run(debug=True)
