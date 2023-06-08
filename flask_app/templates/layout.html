@@ -1,3 +1,4 @@
+<!-- layout.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,9 +43,7 @@
     <!-- Navigation menu -->
     <nav>
         <ul class="horizontal-menu">
-            {% if logged_in %}
-                <li><a href="{{ url_for('home') }}">Logout</a></li>
-            {% endif %}
+            <li><a href="{{ url_for('home') }}">Logout</a></li>
             <li><a href="{{ url_for('stock_graph') }}">Stock Graph</a></li>
         </ul>
     </nav>
