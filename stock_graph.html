@@ -1,0 +1,63 @@
+<!-- stock_graph.html -->
+{% extends "layout.html" %}
+{% block content %}
+    <div class="chart-container">
+        <div id="stock-chart"></div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // Get the stock data from the Flask route
+        var stocks = JSON.parse('{{ stocks | tojson | safe }}');
+
+        // Extract the necessary data for the chart
+        var dates = stocks.map(function(stock) {
+            return stock['Datetime'];
+        });
+        var opens = stocks.map(function(stock) {
+            return stock['Open'];
+        });
+        var highs = stocks.map(function(stock) {
+            return stock['High'];
+        });
+        var lows = stocks.map(function(stock) {
+            return stock['Low'];
+        });
+        var closes = stocks.map(function(stock) {
+            return stock['Close'];
+        });
+
+        // Create the candlestick chart
+        var trace = {
+            x: dates,
+            open: opens,
+            high: highs,
+            low: lows,
+            close: closes,
+            type: 'candlestick',
+            name: 'market data'
+        };
+        var data = [trace];
+        var layout = {
+            title: 'Stock Price Evolution',
+            yaxis: {
+                title: 'Stock Price (USD per Share)'
+            },
+            xaxis: {
+                rangeslider: { visible: true },
+                rangeselector: {
+                    buttons: [
+                        { count: 15, label: '15m', step: 'minute', stepmode: 'backward' },
+                        { count: 45, label: '45m', step: 'minute', stepmode: 'backward' },
+                        { count: 1, label: 'HTD', step: 'hour', stepmode: 'todate' },
+                        { count: 3, label: '3h', step: 'hour', stepmode: 'backward' },
+                        { step: 'all' }
+                    ]
+                }
+            }
+        };
+        Plotly.newPlot('stock-chart', data, layout);
+    </script>
+{% endblock %}

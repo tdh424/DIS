@@ -1,0 +1,33 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Web App</title>
+    <!-- Include CSS and JS files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <!-- Navigation menu -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('stock_graph') }}">Stock Graph</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content section -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 My Web App</p>
+    </footer>
+
+    <!-- Additional scripts -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>
