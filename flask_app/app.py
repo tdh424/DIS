@@ -24,12 +24,20 @@ def home():
 
         # Check if the username and password are correct
         if username == 'DIS' and password == '123':
-            return redirect(url_for('stock_graph'))
+            # Fetch user's total units from the database
+            user_query = "SELECT units FROM users WHERE username = %s;"
+            cur.execute(user_query, (username,))
+            user_units = cur.fetchone()[0]
+
+            return redirect(url_for('stock_graph', units=user_units))
 
     return render_template('home.html')
 
 @app.route('/stock_graph')
 def stock_graph():
+    user_units = request.args.get('units')
+    if user_units is None:
+        return redirect(url_for('home'))
     # Fetch data from yfinance for AAPL
     data_aapl = yf.download(tickers='AAPL', period='1d', interval='1m')
 
@@ -133,7 +141,44 @@ def stock_graph():
     graph_json_aapl = fig_aapl.to_json()
     graph_json_novo = fig_novo.to_json()
 
-    return render_template('stock_graph.html', graph_json_aapl=graph_json_aapl, graph_json_novo=graph_json_novo)
+    # Check if the form is submitted (buy/sell action)
+    if request.method == 'POST':
+        action = request.form.get('action')
+        stock = request.form.get('stock')
+        amount = int(request.form.get('amount', 0))
+
+        if action == 'buy':
+            if stock == 'AAPL':
+                stock_price = data_aapl['Close'].iloc[-1]  # Get the latest stock price
+                cost = stock_price * amount  # Calculate the cost of buying stocks
+                # Check if the user has enough units to buy stocks
+                if user_units['units'] >= cost:
+                    user_units['units'] -= cost
+                    user_units['AAPL'] += amount
+            elif stock == 'NOVO-B.CO':
+                stock_price = data_novo['Close'].iloc[-1]  # Get the latest stock price
+                cost = stock_price * amount  # Calculate the cost of buying stocks
+                # Check if the user has enough units to buy stocks
+                if user_units['units'] >= cost:
+                    user_units['units'] -= cost
+                    user_units['NOVO-B.CO'] += amount
+        elif action == 'sell':
+            if stock == 'AAPL':
+                stock_price = data_aapl['Close'].iloc[-1]  # Get the latest stock price
+                # Check if the user owns enough stocks to sell
+                if user_units['AAPL'] >= amount:
+                    user_units['AAPL'] -= amount
+                    user_units['units'] += stock_price * amount
+            elif stock == 'NOVO-B.CO':
+                stock_price = data_novo['Close'].iloc[-1]  # Get the latest stock price
+                # Check if the user owns enough stocks to sell
+                if user_units['NOVO-B.CO'] >= amount:
+                    user_units['NOVO-B.CO'] -= amount
+                    user_units['units'] += stock_price * amount
+
+    return render_template('stock_graph.html', graph_json_aapl=graph_json_aapl, graph_json_novo=graph_json_novo, user_units=user_units)
 
 if __name__ == '__main__':
+    # Initialize the user units
+    user_units = {'units': 10000, 'AAPL': 0, 'NOVO-B.CO': 0}
     app.run(debug=True)

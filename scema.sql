@@ -1,6 +1,5 @@
 \c stonkviewer
 DROP TABLE IF EXISTS stocks;
-
 CREATE TABLE stocks (
     "Datetime" timestamp with time zone,
     "Open" double precision,
@@ -32,4 +31,18 @@ CREATE TABLE IF NOT EXISTS novo_data (
     Volume FLOAT
     );
 
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    units FLOAT NOT NULL,
+    aapl_units INT NOT NULL,
+    novo_units INT NOT NULL
+);
+
+INSERT INTO users (username, password) VALUES ('DIS', '123');
+
+
 CREATE INDEX ix_stocks_Datetime ON stocks("Datetime");
+
+
