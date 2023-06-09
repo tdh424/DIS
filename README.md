@@ -2,7 +2,7 @@
 DIS Project STONKVIEWER
 
 To run our project you firstly have to install some packages:
-pip install
+pip install pandas psycopg2 plotly yfinance flask
 
 Furthermore in your query console insert the code provided in the scema.sql to create the correct table to be filled with data and extracted into the web app.
 
