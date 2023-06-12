@@ -9,6 +9,7 @@ Furthermore in your query console insert the code provided in the scema.sql to c
 In the file app.py you have to connect your postgreSQL using psycopg2.
 
 When the SQL console has been deployed then simply locate the following file and the write "flask run":
+
 app.py
 
 To access the web app go to your desired web app and use the url: http://127.0.0.1/
